@@ -6,7 +6,6 @@ import { Sandpack } from "@codesandbox/sandpack-react";
 export default function Home() {
   const [code, setCode] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [model, setModel] = useState("openai");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -16,9 +15,9 @@ export default function Home() {
     try {
       const response = await axios.post("/api/generate-code", {
         prompt,
-        model,
       });
-      setCode(JSON.stringify(response.data.code));
+
+      setCode(response.data.code);
     } catch (error) {
       console.error("Error generating code:", error);
     }
@@ -30,36 +29,13 @@ export default function Home() {
     <div className="min-h-screen p-10">
       <h1 className="text-2xl font-bold mb-4">Code Generator</h1>
 
-      <form onSubmit={handleSubmit} className="mb-6">
+      <form onSubmit={handleSubmit} className="mb-6 flex items-center gap-2">
         <textarea
           value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
           placeholder="Enter your prompt"
-          className="w-full p-2 border border-gray-300 text-black rounded mb-4"
+          onChange={(e) => setPrompt(e.target.value)}
+          className="w-full p-2 border border-gray-300 text-black rounded"
         />
-
-        <div className="mb-4">
-          <label>
-            <input
-              type="radio"
-              name="model"
-              value="openai"
-              checked={model === "openai"}
-              onChange={() => setModel("openai")}
-            />{" "}
-            OpenAI
-          </label>
-          <label className="ml-4">
-            <input
-              type="radio"
-              name="model"
-              value="mistral"
-              checked={model === "mistral"}
-              onChange={() => setModel("mistral")}
-            />{" "}
-            Mistral
-          </label>
-        </div>
 
         <button
           type="submit"
